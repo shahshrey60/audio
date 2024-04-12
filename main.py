@@ -78,7 +78,7 @@ def main():
         print("Done 4")
         AskToJoin(driver)
         time.sleep(12)
-        subprocess.Popen(["paplay", "speak_5.wav"])
+        subprocess.Popen(["paplay", "/home/ubuntu/interact/int/audio/speak_5.wav"])
         time.sleep(20)
         print("Done 5")
         driver.save_screenshot("test.png")
