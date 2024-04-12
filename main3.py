@@ -14,37 +14,36 @@ def AskToJoin(driver):
         join_now_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Join now']")))
         join_now_button.click()
 
-# def play_audio_in_loopback_source(wav_file, source_name):
-#     try:
-#         subprocess.Popen(["pacat", wav_file, "<", source_name], shell=True)
-#         print("Audio playing in loopback source.")
-#     except Exception as e:
-#         print(f"Error playing audio in loopback source: {e}")
-
-# def record_audio_from_loopback_sink(channels, recording_file, sink_name):
-#     try:
-#         subprocess.Popen(["parecord", "--channels=" + str(channels), "-d ", recording_file, sink_name])
-#         print("Recording audio from loopback sink.")
-#     except Exception as e:
-#         print(f"Error recording audio from loopback sink: {e}")
-
-def route_audio_to_loopback_source(wav_file, source_name, sample_format="s16le", rate=44100):
+def route_audio_to_loopback_source(wav_file, source_name):
     try:
-        subprocess.Popen(["pacat", wav_file, "--format", sample_format, "--rate", str(rate), "<", source_name], shell=True)
+        subprocess.Popen(["paplay", wav_file, "--device=" + source_name])
         print("Audio routed to loopback source successfully.")
     except Exception as e:
         print(f"Error routing audio to loopback source: {e}")
 
-def record_audio_from_loopback_sink(channels, recording_file, sink_name, sample_format="s16le", rate=44100):
+def record_audio_from_loopback_sink(channels, recording_file, sink_name):
     try:
-        subprocess.Popen(["parecord", "--channels", str(channels), "-d", recording_file, "--format", sample_format, "--rate", str(rate), sink_name])
+        subprocess.Popen(["parecord", "--channels=" + str(channels), "-d", recording_file, "--device=" + sink_name])
         print("Recording audio from loopback sink.")
     except Exception as e:
         print(f"Error recording audio from loopback sink: {e}")
+# def route_audio_to_loopback_source(wav_file, source_name, sample_format="s16le", rate=44100):
+#     try:
+#         subprocess.Popen(["paplay", wav_file, "--format", sample_format, "--rate", str(rate), "<", source_name], shell=True)
+#         print("Audio routed to loopback source successfully.")
+#     except Exception as e:
+#         print(f"Error routing audio to loopback source: {e}")
+
+# def record_audio_from_loopback_sink(channels, recording_file, sink_name, sample_format="s16le", rate=44100):
+#     try:
+#         subprocess.Popen(["parecord", "--channels", str(channels), "-d", recording_file, "--format", sample_format, "--rate", str(rate), sink_name])
+#         print("Recording audio from loopback sink.")
+#     except Exception as e:
+#         print(f"Error recording audio from loopback sink: {e}")
         
 def main():
     with SB(uc=True, headless=True) as driver:
-        subprocess.run(["pacmd", "set-default-sink", "my_sink"])
+        # subprocess.run(["pacmd", "set-default-sink", "my_sink"])
 
         driver.execute_cdp_cmd(
             "Browser.grantPermissions",
@@ -77,17 +76,18 @@ def main():
         source_name = "my_sink.monitor"
         recording_file = "/home/ubuntu/interact/int/audio/recorded_audio.wav"
         channels = 2
-
-        channels = 2
-        sink_name = "my_sink"  # Replace with your sink name
         sample_format = "s16le"
         rate = 44100
         
         # play_audio_in_loopback_source(wav_file, source_name)
         # record_audio_from_loopback_sink(channels, recording_file, sink_name)
-        route_audio_to_loopback_source(wav_file, source_name, sample_format, rate)
-        record_audio_from_loopback_sink(channels, recording_file, sink_name, sample_format, rate)
-        
+        # route_audio_to_loopback_source(wav_file, source_name, sample_format, rate)
+        # record_audio_from_loopback_sink(channels, recording_file, sink_name, sample_format, rate)
+        # subprocess.Popen(["paplay", "--device=my_sink.monitor", "your_audio_file.wav"])
+        # route_audio_to_loopback_source(wav_file, source_name)
+        # record_audio_from_loopback_sink(channels, recording_file, sink_name)
+        subprocess.Popen(["sox", wav_file, "-t", "pulseaudio", source_name])
+
         time.sleep(25)
         print("Done 5")
         driver.save_screenshot("test.png")
