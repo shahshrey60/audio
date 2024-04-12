@@ -78,7 +78,18 @@ def main():
         print("Done 4")
         AskToJoin(driver)
         time.sleep(12)
-        subprocess.Popen(["paplay", "/home/ubuntu/interact/int/audio/speak_5.wav"])
+        audio_file_path = "/home/ubuntu/interact/int/audio/speak_5.wav"
+        recorded_audio_file_path = "/home/ubuntu/interact/int/audio/recorded_audio.wav"
+    
+        # Set the sink and source names
+        sink_name = "my_sink"
+        source_name = "my_sink.monitor"
+        subprocess.Popen(["paplay", "--device=" + sink_name, audio_file_path])
+
+    
+        subprocess.Popen(["parec", "--device=" + source_name, recorded_audio_file_path])
+
+        # subprocess.Popen(["paplay", "/home/ubuntu/interact/int/audio/speak_5.wav"])
         time.sleep(25)
         print("Done 5")
         driver.save_screenshot("test.png")
