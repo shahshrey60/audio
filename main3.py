@@ -225,7 +225,7 @@ def main():
         driver.click("#passwordNext > div > button")
         time.sleep(10)
         print("Done 3")
-        driver.get('https://meet.google.com/hqx-emvg-ikg')
+        driver.get('https://meet.google.com/xpj-eygt-vwi')
         time.sleep(10)
         time.sleep(10)
         print("Done 4")
