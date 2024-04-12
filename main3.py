@@ -193,26 +193,14 @@ def AskToJoin(driver):
         join_now_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Join now']")))
         join_now_button.click()
 
-def route_audio_to_loopback_source(wav_file, source_name):
-    try:
-        subprocess.Popen(["paplay", wav_file, "--device=" + source_name])
-        print("Audio routed to loopback source successfully.")
-    except Exception as e:
-        print(f"Error routing audio to loopback source: {e}")
+# Play audio into the virtual microphone
+def play_audio(wav_file):
+    subprocess.Popen(["cat", wav_file, ">", virtual_mic_pipe], shell=True)
 
-# def record_audio_from_loopback_sink(channels, recording_file, sink_name):
-#     try:
-#         subprocess.Popen(["parecord", "--channels=" + str(channels), "-d", recording_file, "--device=" + sink_name])
-#         print("Recording audio from loopback sink.")
-#     except Exception as e:
-#         print(f"Error recording audio from loopback sink: {e}")
+# Record audio from the virtual speaker
+def record_audio(recording_file):
+    subprocess.Popen(["arecord", "-f", "S16_LE", "-r", "44100", "-c", "2", recording_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-def record_audio_from_loopback_sink(channels, recording_file):
-    try:
-        subprocess.Popen(["parecord", "--channels=" + str(channels), "-d", recording_file, "--device=hw:Loopback,0,0"])
-        print("Recording audio from loopback sink.")
-    except Exception as e:
-        print(f"Error recording audio from loopback sink: {e}")
             
 def main():
     with SB(uc=True, headless=True) as driver:
@@ -252,9 +240,23 @@ def main():
         sample_format = "s16le"
         rate = 44100
         
-        route_audio_to_loopback_source(wav_file, source_name)
+        # route_audio_to_loopback_source(wav_file, source_name)
+        import subprocess
+        import os
+        
+        # Create named pipes for virtual microphone and speaker
+        virtual_mic_pipe = "/tmp/virtual_mic"
+        virtual_speaker_pipe = "/tmp/virtual_speaker"
+        
+        if not os.path.exists(virtual_mic_pipe):
+            os.mkfifo(virtual_mic_pipe)
+        
+        if not os.path.exists(virtual_speaker_pipe):
+            os.mkfifo(virtual_speaker_pipe)
+        # record_audio_from_loopback_sink(channels, recording_file)
+        play_audio(wav_file)
+        record_audio(recording_file)
 
-        record_audio_from_loopback_sink(channels, recording_file)
 
         time.sleep(25)
         print("Done 5")
@@ -262,4 +264,10 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
 
