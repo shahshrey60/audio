@@ -193,6 +193,16 @@ def AskToJoin(driver):
         join_now_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Join now']")))
         join_now_button.click()
 
+# Create named pipes for virtual microphone and speaker
+virtual_mic_pipe = "/tmp/virtual_mic"
+virtual_speaker_pipe = "/tmp/virtual_speaker"
+
+if not os.path.exists(virtual_mic_pipe):
+        os.mkfifo(virtual_mic_pipe)
+
+if not os.path.exists(virtual_speaker_pipe):
+        os.mkfifo(virtual_speaker_pipe)
+
 # Play audio into the virtual microphone
 def play_audio(wav_file):
         import subprocess
@@ -244,15 +254,9 @@ def main():
         import subprocess
         import os
         
-        # Create named pipes for virtual microphone and speaker
-        virtual_mic_pipe = "/tmp/virtual_mic"
-        virtual_speaker_pipe = "/tmp/virtual_speaker"
+
         
-        if not os.path.exists(virtual_mic_pipe):
-            os.mkfifo(virtual_mic_pipe)
         
-        if not os.path.exists(virtual_speaker_pipe):
-            os.mkfifo(virtual_speaker_pipe)
         # record_audio_from_loopback_sink(channels, recording_file)
         play_audio(wav_file)
         record_audio(recording_file)
