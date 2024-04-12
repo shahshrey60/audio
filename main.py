@@ -1,0 +1,103 @@
+import subprocess
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+# Set up loopback device
+# subprocess.run(["pactl", "load-module", "module-null-sink", "sink_name=my_sink"])
+# subprocess.run(["pactl", "load-module", "module-loopback", "source=my_sink.monitor"])
+
+from seleniumbase import BaseCase
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+
+def AskToJoin(driver):
+    # Ask to Join meet
+    # time.sleep(5)
+    # Wait for the 'Join now' button to be clickable
+    try:
+        join_now_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Ask to join']")))
+        # Click the 'Join now' button
+        join_now_button.click()
+        # Accept any alert that might appear
+    except Exception as e:
+        join_now_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Join now']")))
+        # Click the 'Join now' button
+        join_now_button.click()
+        # Accept any alert that might appear
+    
+
+from seleniumbase import SB
+
+def main():
+    # permissions = [
+    # {
+    #     "name": "geolocation",
+    #     "grant": "granted"
+    # },
+    # {
+    #     "name": "audioCapture",
+    #     "grant": "granted"
+    # },
+    # {
+    #     "name": "videoCapture",
+    #     "grant": "denied"
+    # }
+    # ]
+    with SB(uc=True, headless=True) as driver:
+        
+        driver.execute_cdp_cmd(
+            "Browser.grantPermissions",
+            {
+                "origin": 'https://meet.google.com',
+                "permissions": ["geolocation", "audioCapture", "displayCapture", "videoCapture",
+                    "videoCapturePanTiltZoom"]
+                # "permissions":permissions,
+            },
+        )
+        # driver.execute_script("navigator.permissions.query({name:'geolocation'}).then(permission => { permission.state = 'denied'; });")
+        # driver.execute_script("navigator.permissions.query({name:'microphone'}).then(permission => { permission.state = 'granted'; });")
+        # driver.execute_script("navigator.permissions.query({name:'camera'}).then(permission => { permission.state = 'denied'; });")
+
+        time.sleep(10)
+        print("Done 1")
+        driver.get("https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?redirect_uri=https%3A%2F%2Fdevelopers.google.com%2Foauthplayground&prompt=consent&response_type=code&client_id=407408718192.apps.googleusercontent.com&scope=email&access_type=offline&flowName=GeneralOAuthFlow")
+        driver.type("#identifierId",'compbadshah1408@gmail.com')
+        driver.click("#identifierNext > div > button")
+        print("Done 2")
+        time.sleep(10)
+        driver.type("#password > div.aCsJod.oJeWuf > div > div.Xb9hP > input", 'Shrey@1408')
+        driver.click("#passwordNext > div > button")
+        time.sleep(10)
+        print("Done 3")
+        driver.get('https://meet.google.com/ozg-cnsp-zii')
+        time.sleep(10)
+        # time.sleep(10)
+        # try:
+        #     # allow_button = driver.find_element(By.XPATH, '//span[text()="Allow microphone and camera"]')
+        #     allow_buttons = driver.find_elements(By.XPATH, '//span[(text()="Allow microphone and camera"]')
+        #     for button in allow_buttons:
+        #         button.click()
+        #     # allow_button.click()
+        # except Exception as e:
+        #     temp=1
+        #     print("Done 34")
+        # time.sleep(10)
+        # try:
+        #     driver.accept_alert()
+        # except:
+        #     pass
+        # turnOffMicCam()
+        time.sleep(10)
+        print("Done 4")
+        AskToJoin(driver)
+        time.sleep(12)
+        subprocess.Popen(["paplay", "speak_5.wav.wav"])
+        time.sleep(20)
+        print("Done 5")
+        driver.save_screenshot("test.png")
+
+if __name__ == "__main__":
+    main()
