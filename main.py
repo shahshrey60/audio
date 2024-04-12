@@ -84,10 +84,9 @@ def main():
         # Set the sink and source names
         sink_name = "my_sink"
         source_name = "my_sink.monitor"
-        subprocess.Popen(["paplay", "--device=" + sink_name, audio_file_path])
-
-    
-        subprocess.Popen(["parec", "--device=" + source_name, recorded_audio_file_path])
+        
+        subprocess.Popen(["paplay", "--device=" + source_name, audio_file_path])
+        subprocess.Popen(["parec", "--device=" + sink_name, recorded_audio_file_path])
 
         # subprocess.Popen(["paplay", "/home/ubuntu/interact/int/audio/speak_5.wav"])
         time.sleep(25)
