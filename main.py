@@ -47,7 +47,7 @@ def main():
     # }
     # ]
     with SB(uc=True, headless=True) as driver:
-        
+        subprocess.run(["pacmd", "set-default-sink", 'my_sink'])
         driver.execute_cdp_cmd(
             "Browser.grantPermissions",
             {
@@ -79,7 +79,7 @@ def main():
         AskToJoin(driver)
         time.sleep(12)
         subprocess.Popen(["paplay", "/home/ubuntu/interact/int/audio/speak_5.wav"])
-        time.sleep(20)
+        time.sleep(25)
         print("Done 5")
         driver.save_screenshot("test.png")
 
