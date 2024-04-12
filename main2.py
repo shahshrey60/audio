@@ -177,7 +177,7 @@ def meet_main():
         print("Done 5")
         driver.save_screenshot("test.png")
 
-if _name_ == "_main_":
+if __name__ == "__main__":
   # Modify these variables as needed
   meet_main()
   
