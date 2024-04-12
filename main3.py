@@ -150,7 +150,7 @@ def main():
         driver.click("#passwordNext > div > button")
         time.sleep(10)
         print("Done 3")
-        driver.get('https://meet.google.com/ozg-cnsp-zii')
+        driver.get('https://meet.google.com/hqx-emvg-ikg')
         time.sleep(10)
         time.sleep(10)
         print("Done 4")
