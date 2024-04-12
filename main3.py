@@ -200,13 +200,20 @@ def route_audio_to_loopback_source(wav_file, source_name):
     except Exception as e:
         print(f"Error routing audio to loopback source: {e}")
 
-def record_audio_from_loopback_sink(channels, recording_file, sink_name):
+# def record_audio_from_loopback_sink(channels, recording_file, sink_name):
+#     try:
+#         subprocess.Popen(["parecord", "--channels=" + str(channels), "-d", recording_file, "--device=" + sink_name])
+#         print("Recording audio from loopback sink.")
+#     except Exception as e:
+#         print(f"Error recording audio from loopback sink: {e}")
+
+def record_audio_from_loopback_sink(channels, recording_file):
     try:
-        subprocess.Popen(["parecord", "--channels=" + str(channels), "-d", recording_file, "--device=" + sink_name])
+        subprocess.Popen(["parecord", "--channels=" + str(channels), "-d", recording_file, "--device=hw:Loopback,0,0"])
         print("Recording audio from loopback sink.")
     except Exception as e:
         print(f"Error recording audio from loopback sink: {e}")
-
+            
 def main():
     with SB(uc=True, headless=True) as driver:
         subprocess.run(["pacmd", "set-default-sink", "Loopback,0,0"])
@@ -247,7 +254,7 @@ def main():
         
         route_audio_to_loopback_source(wav_file, source_name)
 
-        record_audio_from_loopback_sink(channels, recording_file, sink_name)
+        record_audio_from_loopback_sink(channels, recording_file)
 
         time.sleep(25)
         print("Done 5")
