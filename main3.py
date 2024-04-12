@@ -195,17 +195,17 @@ def AskToJoin(driver):
 
 # Play audio into the virtual microphone
 def play_audio(wav_file):
-    subprocess.Popen(["cat", wav_file, ">", virtual_mic_pipe], shell=True)
+        import subprocess
+        subprocess.Popen(["cat", wav_file, ">", virtual_mic_pipe], shell=True)
 
 # Record audio from the virtual speaker
 def record_audio(recording_file):
-    subprocess.Popen(["arecord", "-f", "S16_LE", "-r", "44100", "-c", "2", recording_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        import subprocess
+        subprocess.Popen(["arecord", "-f", "S16_LE", "-r", "44100", "-c", "2", recording_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
             
 def main():
     with SB(uc=True, headless=True) as driver:
-        subprocess.run(["pacmd", "set-default-sink", "Loopback,0,0"])
-
         driver.execute_cdp_cmd(
             "Browser.grantPermissions",
             {
