@@ -27,7 +27,23 @@ def AskToJoin(driver):
         # Click the 'Join now' button
         join_now_button.click()
         # Accept any alert that might appear
-    
+
+import subprocess
+
+def route_audio_to_loopback_source(wav_file, source_name):
+    try:
+        subprocess.run(["pacat", wav_file, "<", source_name], check=True, shell=True)
+        print("Audio routed to loopback source successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error routing audio to loopback source: {e}")
+
+def record_from_loopback_sink(channels, recording_file, sink_name):
+    try:
+        subprocess.run(["parecord", "--channels=" + str(channels), "-d", recording_file, sink_name], check=True)
+        print("Audio recorded from loopback sink successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error recording audio from loopback sink: {e}")
+
 
 from seleniumbase import SB
 
@@ -85,15 +101,31 @@ def main():
         sink_name = "my_sink"
         source_name = "my_sink.monitor"
         
-        subprocess.Popen(["paplay", "--device=" + source_name, audio_file_path])
-        subprocess.Popen(["parec", "--device=" + sink_name, recorded_audio_file_path])
+        # subprocess.Popen(["paplay", "--device=" + source_name, audio_file_path])
+        # subprocess.Popen(["parec", "--device=" + sink_name, recorded_audio_file_path])
 
         # subprocess.Popen(["paplay", "/home/ubuntu/interact/int/audio/speak_5.wav"])
+        # Replace these variables with your actual WAV file path, loopback source name, and sink name
+        wav_file = "/home/ubuntu/interact/int/audio/speak_5.wav"
+        # source_name = "your_loopback_source_name"
+        # sink_name = "your_loopback_sink_name"
+        recording_file = "/home/ubuntu/interact/int/audio/recorded_audio.wav"
+        channels = 2
+        
+        # Route audio to loopback source (virtual mic)
+        route_audio_to_loopback_source(wav_file, source_name)
+        
+        # Record from loopback sink (virtual speaker)
+        record_from_loopback_sink(channels, recording_file, sink_name)
         time.sleep(25)
         print("Done 5")
         driver.save_screenshot("test.png")
 
 if __name__ == "__main__":
     main()
+
+
+
+
 
 
