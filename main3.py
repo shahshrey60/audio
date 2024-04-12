@@ -14,20 +14,34 @@ def AskToJoin(driver):
         join_now_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Join now']")))
         join_now_button.click()
 
-def play_audio_in_loopback_source(wav_file, source_name):
-    try:
-        subprocess.Popen(["pacat", wav_file, "<", source_name], shell=True)
-        print("Audio playing in loopback source.")
-    except Exception as e:
-        print(f"Error playing audio in loopback source: {e}")
+# def play_audio_in_loopback_source(wav_file, source_name):
+#     try:
+#         subprocess.Popen(["pacat", wav_file, "<", source_name], shell=True)
+#         print("Audio playing in loopback source.")
+#     except Exception as e:
+#         print(f"Error playing audio in loopback source: {e}")
 
-def record_audio_from_loopback_sink(channels, recording_file, sink_name):
+# def record_audio_from_loopback_sink(channels, recording_file, sink_name):
+#     try:
+#         subprocess.Popen(["parecord", "--channels=" + str(channels), "-d ", recording_file, sink_name])
+#         print("Recording audio from loopback sink.")
+#     except Exception as e:
+#         print(f"Error recording audio from loopback sink: {e}")
+
+def route_audio_to_loopback_source(wav_file, source_name, sample_format="s16le", rate=44100):
     try:
-        subprocess.Popen(["parecord", "--channels=" + str(channels), "-d", recording_file, sink_name])
+        subprocess.Popen(["pacat", wav_file, "--format", sample_format, "--rate", str(rate), "<", source_name], shell=True)
+        print("Audio routed to loopback source successfully.")
+    except Exception as e:
+        print(f"Error routing audio to loopback source: {e}")
+
+def record_audio_from_loopback_sink(channels, recording_file, sink_name, sample_format="s16le", rate=44100):
+    try:
+        subprocess.Popen(["parecord", "--channels", str(channels), "-d", recording_file, "--format", sample_format, "--rate", str(rate), sink_name])
         print("Recording audio from loopback sink.")
     except Exception as e:
         print(f"Error recording audio from loopback sink: {e}")
-
+        
 def main():
     with SB(uc=True, headless=True) as driver:
         subprocess.run(["pacmd", "set-default-sink", "my_sink"])
@@ -39,7 +53,7 @@ def main():
                 "permissions": ["geolocation", "audioCapture", "displayCapture", "videoCapture", "videoCapturePanTiltZoom"]
             },
         )
-
+        
         time.sleep(10)
         print("Done 1")
         driver.get("https://accounts.google.com/o/oauth2/v2/auth/oauthchooseaccount?redirect_uri=https%3A%2F%2Fdevelopers.google.com%2Foauthplayground&prompt=consent&response_type=code&client_id=407408718192.apps.googleusercontent.com&scope=email&access_type=offline&flowName=GeneralOAuthFlow")
@@ -63,9 +77,16 @@ def main():
         source_name = "my_sink.monitor"
         recording_file = "/home/ubuntu/interact/int/audio/recorded_audio.wav"
         channels = 2
+
+        channels = 2
+        sink_name = "my_sink"  # Replace with your sink name
+        sample_format = "s16le"
+        rate = 44100
         
-        play_audio_in_loopback_source(wav_file, source_name)
-        record_audio_from_loopback_sink(channels, recording_file, sink_name)
+        # play_audio_in_loopback_source(wav_file, source_name)
+        # record_audio_from_loopback_sink(channels, recording_file, sink_name)
+        route_audio_to_loopback_source(wav_file, source_name, sample_format, rate)
+        record_audio_from_loopback_sink(channels, recording_file, sink_name, sample_format, rate)
         
         time.sleep(25)
         print("Done 5")
