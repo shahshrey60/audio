@@ -74,27 +74,11 @@ def main():
         print("Done 3")
         driver.get('https://meet.google.com/ozg-cnsp-zii')
         time.sleep(10)
-        # time.sleep(10)
-        # try:
-        #     # allow_button = driver.find_element(By.XPATH, '//span[text()="Allow microphone and camera"]')
-        #     allow_buttons = driver.find_elements(By.XPATH, '//span[(text()="Allow microphone and camera"]')
-        #     for button in allow_buttons:
-        #         button.click()
-        #     # allow_button.click()
-        # except Exception as e:
-        #     temp=1
-        #     print("Done 34")
-        # time.sleep(10)
-        # try:
-        #     driver.accept_alert()
-        # except:
-        #     pass
-        # turnOffMicCam()
         time.sleep(10)
         print("Done 4")
         AskToJoin(driver)
         time.sleep(12)
-        subprocess.Popen(["paplay", "speak_5.wav.wav"])
+        subprocess.Popen(["paplay", "speak_5.wav"])
         time.sleep(20)
         print("Done 5")
         driver.save_screenshot("test.png")
