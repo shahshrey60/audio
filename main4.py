@@ -117,10 +117,10 @@ def main():
         AskToJoin(driver)
         time.sleep(12)
         
-        wav_file = "/home/ubuntu/interact/int/audio/speak_5.wav"
+        wav_file = "/home/ubuntu/interact/audio/speak_5.wav"
         sink_name = "Loopback,0,0"
         source_name = "Loopback,1,0"
-        recording_file = "/home/ubuntu/interact/int/audio/recorded_audio.wav"
+        recording_file = "/home/ubuntu/interact/audio/recorded_audio.wav"
         channels = 2
         sample_format = "s16le"
         rate = 44100
